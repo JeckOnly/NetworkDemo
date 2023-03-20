@@ -11,4 +11,11 @@ interface ExampleApi {
     suspend fun fetchArticle(
 
     ): ApiResponse<ArticleDto>
+
+    @GET("article/list/0/json")
+    suspend fun fetchArticle2(
+
+    ): ArticleDto
+
+
 }

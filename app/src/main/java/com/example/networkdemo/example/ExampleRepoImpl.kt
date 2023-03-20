@@ -1,9 +1,14 @@
 package com.example.networkdemo.example
 
 import com.example.networkdemo.example.model.dto.ArticleDto
+import com.example.networkdemo.example.model.mapper.toListArticleUI
 import com.example.networkdemo.example.model.ui.ArticleUI
-import com.skydoves.sandwich.*
-import kotlinx.coroutines.flow.update
+import com.skydoves.sandwich.ApiResponse
+import com.skydoves.sandwich.ApiSuccessModelMapper
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -16,6 +21,19 @@ class ExampleRepoImpl
     override suspend fun fetchArticle(): ApiResponse<ArticleDto> {
        return exampleApi.fetchArticle()
     }
+
+    override suspend fun fetchArticle2(): Flow<MyResult<List<ArticleUI>>> = flow {
+        try {
+            emit(MyResult.Loading(true))
+            val list = exampleApi.fetchArticle2().toListArticleUI()
+            emit(MyResult.Success(data = list))
+        } catch (e: Throwable) {
+            Timber.d(e.stackTraceToString())
+            emit(MyResult.Failure(throwable = e))
+        } finally {
+            emit(MyResult.Loading(false))
+        }
+    }.flowOn(Dispatchers.IO)
 }
 
 object SuccessPosterMapper : ApiSuccessModelMapper<ArticleDto, List<ArticleUI>> {

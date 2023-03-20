@@ -27,14 +27,34 @@ class ExampleViewModel @Inject constructor(
         viewModelScope.launch {
             repo.fetchArticle().suspendOnSuccess {
                 mMutableArticleUI.update {
-                   data.data.datas.map {
-                       ArticleUI(title = it.title, author = it.author)
-                   }
-               }
+                    data.data.datas.map {
+                        ArticleUI(title = it.title, author = it.author)
+                    }
+                }
             }.suspendOnError {
                 Timber.d(message = "Server error: " + message())
             }.suspendOnException {
                 Timber.d(message = "Client error: " + message())
+            }
+        }
+    }
+
+    fun fetchArticleFlow() {
+        viewModelScope.launch {
+            repo.fetchArticle2().collect { result ->
+                when(result) {
+                    is MyResult.Failure -> {
+                        // TODO
+                    }
+                    is MyResult.Loading -> {
+                        // TODO
+                    }
+                    is MyResult.Success -> {
+                        mMutableArticleUI.update {
+                            result.data?: emptyList()
+                        }
+                    }
+                }
             }
         }
     }

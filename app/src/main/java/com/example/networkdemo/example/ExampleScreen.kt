@@ -32,6 +32,12 @@ fun ExampleScreen(viewModel: ExampleViewModel = viewModel()) {
         }) {
             Text(text = "请求后台")
         }
+        Spacer(modifier = Modifier.height(10.dp))
+        Button(onClick = {
+            viewModel.fetchArticleFlow()
+        }) {
+            Text(text = "请求后台2")
+        }
     }
 }
 
