@@ -9,4 +9,6 @@ interface ExampleIRepo {
     suspend fun fetchArticle(): ApiResponse<ArticleDto>
 
     suspend fun fetchArticle2(): Flow<MyResult<List<ArticleUI>>>
+
+    suspend fun fetchArticleToResult(): Flow<List<ArticleUI>>
 }

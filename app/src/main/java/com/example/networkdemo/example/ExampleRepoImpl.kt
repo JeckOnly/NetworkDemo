@@ -34,6 +34,17 @@ class ExampleRepoImpl
             emit(MyResult.Loading(false))
         }
     }.flowOn(Dispatchers.IO)
+
+    override suspend fun fetchArticleToResult(): Flow<List<ArticleUI>> = flow<List<ArticleUI>> {
+        val result = exampleApi.fetchArticleToResult()
+        result.onSuccess {
+            emit(it.toListArticleUI())
+        }.onFailure {
+            emit(emptyList())
+        }
+    }.flowOn(Dispatchers.IO)
+
+
 }
 
 object SuccessPosterMapper : ApiSuccessModelMapper<ArticleDto, List<ArticleUI>> {

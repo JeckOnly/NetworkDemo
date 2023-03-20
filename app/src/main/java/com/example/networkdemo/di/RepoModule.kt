@@ -1,5 +1,7 @@
 package com.example.networkdemo.di
 
+import com.example.networkdemo.domain.impl.BackendRepoImpl
+import com.example.networkdemo.domain.interf.BackendRepo
 import com.example.networkdemo.example.ExampleIRepo
 import com.example.networkdemo.example.ExampleRepoImpl
 import dagger.Binds
@@ -14,7 +16,13 @@ abstract class RepoModule {
 
     @Binds
     @Singleton
-    abstract fun bindDatabaseRepo(
+    abstract fun bindExampleRepo(
         repoImpl: ExampleRepoImpl
     ): ExampleIRepo
+
+    @Binds
+    @Singleton
+    abstract fun bindDatabaseRepo(
+        repoImpl: BackendRepoImpl
+    ): BackendRepo
 }

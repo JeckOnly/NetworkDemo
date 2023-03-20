@@ -25,16 +25,16 @@ object RemoteModule {
     fun provideOkHttpClient(): OkHttpClient {
         return OkHttpClient.Builder()
             .addInterceptor(HttpLoggingInterceptor())
-            .addNetworkInterceptor(HttpLoggingInterceptor())
             .build()
     }
 
     @Provides
     @Singleton
+    @Named("backend_retrofit")
     fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {
         return Retrofit.Builder()
             .client(okHttpClient)
-            .baseUrl("TODO")
+            .baseUrl("https://device-api.szmoma-tech.com")
             .addConverterFactory(MoshiConverterFactory.create())
             .addCallAdapterFactory(ApiResponseCallAdapterFactory.create())
             .build()
@@ -60,7 +60,7 @@ object RemoteModule {
 
     @Provides
     @Singleton
-    fun provideBackApi(retrofit: Retrofit): BackendApi {
+    fun provideBackApi(@Named("backend_retrofit") retrofit: Retrofit): BackendApi {
         return retrofit.create(BackendApi::class.java)
     }
 }

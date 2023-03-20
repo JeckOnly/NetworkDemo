@@ -58,4 +58,15 @@ class ExampleViewModel @Inject constructor(
             }
         }
     }
+
+    @Deprecated("没有Adapter")
+    fun fetchArticleToResult() {
+        viewModelScope.launch {
+            repo.fetchArticleToResult().collect { result ->
+                mMutableArticleUI.update {
+                    result
+                }
+            }
+        }
+    }
 }
