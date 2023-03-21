@@ -53,5 +53,17 @@ fun MyScreen(
         }) {
             Text(text = "获取推流key")
         }
+        Button(onClick = {
+            viewModel.getConfigCode(
+                doOnSuccess = {
+                    Toast.makeText(context, "成功获取", Toast.LENGTH_SHORT).show()
+                },
+                doOnFailure = {
+                    Toast.makeText(context, "失败，看log", Toast.LENGTH_SHORT).show()
+                }
+            )
+        }) {
+            Text(text = "获取推流配置码")
+        }
     }
 }

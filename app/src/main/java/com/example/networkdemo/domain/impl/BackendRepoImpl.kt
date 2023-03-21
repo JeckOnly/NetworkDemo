@@ -1,6 +1,8 @@
 package com.example.networkdemo.domain.impl
 
 import com.example.networkdemo.domain.interf.BackendRepo
+import com.example.networkdemo.model.ConfigCodeBody
+import com.example.networkdemo.model.ConfigCodeDto
 import com.example.networkdemo.model.VeriKeyDto
 import com.example.networkdemo.remote.api.BackendApi
 import com.example.networkdemo.remote.state.ResultState
@@ -27,6 +29,20 @@ class BackendRepoImpl @Inject constructor(
             emit(ResultState.Loading(false))
         }
 
+    }.flowOn(Dispatchers.IO)
+
+    override fun getConfigCode(configCodeBody: ConfigCodeBody): Flow<ResultState<ConfigCodeDto>> = flow {
+
+        try {
+            emit(ResultState.Loading(true))
+            val configCodeDto = backendApi.getConfigCode(configCodeBody)
+            emit(ResultState.Success(data = configCodeDto))
+        } catch (e: Throwable) {
+            emit(ResultState.Failure(throwable = e))
+
+        } finally {
+            emit(ResultState.Loading(false))
+        }
     }.flowOn(Dispatchers.IO)
 
 }

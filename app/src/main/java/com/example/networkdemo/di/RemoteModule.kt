@@ -1,6 +1,7 @@
 package com.example.networkdemo.di
 
 import com.example.networkdemo.example.ExampleApi
+import com.example.networkdemo.remote.HeaderInterceptor
 import com.example.networkdemo.remote.api.BackendApi
 import com.skydoves.sandwich.adapters.ApiResponseCallAdapterFactory
 import dagger.Module
@@ -25,6 +26,7 @@ object RemoteModule {
     fun provideOkHttpClient(): OkHttpClient {
         return OkHttpClient.Builder()
             .addInterceptor(HttpLoggingInterceptor())
+            .addInterceptor(HeaderInterceptor())
             .build()
     }
 
