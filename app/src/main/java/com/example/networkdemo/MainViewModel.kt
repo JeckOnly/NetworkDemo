@@ -3,15 +3,15 @@ package com.example.networkdemo
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.networkdemo.domain.interf.BackendRepo
-import com.example.networkdemo.model.ConfigCodeBody
-import com.example.networkdemo.model.EXAMPLE_SIGN_KEY_BODY
-import com.example.networkdemo.model.VeriKeyDto
+import com.example.networkdemo.model.*
 import com.example.networkdemo.remote.state.ResultState
 import com.example.networkdemo.util.EncryptUtil
 import com.example.networkdemo.util.toJson
 import com.example.networkdemo.util.toMd5Str
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -24,6 +24,8 @@ class MainViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val mutableVeriKey: MutableStateFlow<VeriKeyDto?> = MutableStateFlow(null)
+
+    private val mutableConfigCodeDto: MutableStateFlow<ConfigCodeDto?> = MutableStateFlow(null)
 
     fun getVeriKey(doOnSuccess: () -> Unit, doOnFailure: () -> Unit) {
         viewModelScope.launch {
@@ -70,7 +72,7 @@ class MainViewModel @Inject constructor(
 
                 backendRepo.getConfigCode(
                     configCodeBody = configCodeBody
-                ).collect {
+                ).onEach {
                     when (it) {
                         is ResultState.Failure -> {
                             Timber.d(it.throwable.stackTraceToString())
@@ -81,13 +83,58 @@ class MainViewModel @Inject constructor(
                         }
                         is ResultState.Success -> {
                             Timber.d(it.data.toString())
-
+                            mutableConfigCodeDto.update { _ ->
+                                it.data
+                            }
                             doOnSuccess()
                         }
                     }
-                }
+                }.collect()
             }
 
+        }
+    }
+
+    fun checkConfigCode(doOnSuccess: () -> Unit, doOnFailure: () -> Unit) {
+        viewModelScope.launch {
+            mutableVeriKey.value?.let { verikeyDto ->
+                mutableConfigCodeDto.value?.data?.code?.let { configCode ->
+
+                    val timestamp = System.currentTimeMillis()
+                    val checkConfigCodeBodybody = CheckConfigCodeBodybody(code = configCode)
+                    val signTemp = EncryptUtil.spliceSignStr(
+                        signKey = verikeyDto.data,
+                        timeStamp = timestamp.toString(),
+                        bodyString = checkConfigCodeBodybody.toJson()
+                    )
+                    Timber.d("时间戳 $timestamp")
+                    Timber.d("signTemp $signTemp")
+                    val sign = signTemp.toMd5Str()
+                    Timber.d("md5sign $sign")
+                    val checkConfigCodeBody = CheckConfigCodeBody(
+                        timestamp = timestamp,
+                        sign = sign,
+                        body = checkConfigCodeBodybody
+                    )
+                    backendRepo.checkConfigCode(
+                        checkConfigCodeBody
+                    ).onEach {
+                        when (it) {
+                            is ResultState.Failure -> {
+                                Timber.d(it.throwable.stackTraceToString())
+                                doOnFailure()
+                            }
+                            is ResultState.Loading -> {
+
+                            }
+                            is ResultState.Success -> {
+                                Timber.d(it.data.toString())
+                                doOnSuccess()
+                            }
+                        }
+                    }.collect()
+                }
+            }
         }
     }
 

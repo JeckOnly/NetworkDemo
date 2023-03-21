@@ -1,9 +1,7 @@
 package com.example.networkdemo.domain.impl
 
 import com.example.networkdemo.domain.interf.BackendRepo
-import com.example.networkdemo.model.ConfigCodeBody
-import com.example.networkdemo.model.ConfigCodeDto
-import com.example.networkdemo.model.VeriKeyDto
+import com.example.networkdemo.model.*
 import com.example.networkdemo.remote.api.BackendApi
 import com.example.networkdemo.remote.state.ResultState
 import kotlinx.coroutines.Dispatchers
@@ -40,9 +38,24 @@ class BackendRepoImpl @Inject constructor(
         } catch (e: Throwable) {
             emit(ResultState.Failure(throwable = e))
 
-        } finally {
-            emit(ResultState.Loading(false))
-        }
-    }.flowOn(Dispatchers.IO)
+            } finally {
+                emit(ResultState.Loading(false))
+            }
+        }.flowOn(Dispatchers.IO)
+
+
+    override fun checkConfigCode(checkConfigCodeBody: CheckConfigCodeBody): Flow<ResultState<CheckConfigCodeDto>> =
+        flow {
+            try {
+                emit(ResultState.Loading(true))
+                val checkConfigDto = backendApi.checkConfigCode(checkConfigCodeBody)
+                emit(ResultState.Success(data = checkConfigDto))
+            } catch (e: Throwable) {
+                emit(ResultState.Failure(throwable = e))
+
+            } finally {
+                emit(ResultState.Loading(false))
+            }
+        }.flowOn(Dispatchers.IO)
 
 }

@@ -1,11 +1,14 @@
 package com.example.networkdemo
 
 import android.os.Bundle
+import android.widget.Space
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -13,6 +16,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.dp
 import com.example.networkdemo.ui.theme.NetworkDemoTheme
 import dagger.hilt.android.AndroidEntryPoint
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -53,6 +57,7 @@ fun MyScreen(
         }) {
             Text(text = "获取推流key")
         }
+        Spacer(modifier = Modifier.height(10.dp))
         Button(onClick = {
             viewModel.getConfigCode(
                 doOnSuccess = {
@@ -64,6 +69,20 @@ fun MyScreen(
             )
         }) {
             Text(text = "获取推流配置码")
+        }
+
+        Spacer(modifier = Modifier.height(10.dp))
+        Button(onClick = {
+            viewModel.checkConfigCode(
+                doOnSuccess = {
+                    Toast.makeText(context, "成功获取", Toast.LENGTH_SHORT).show()
+                },
+                doOnFailure = {
+                    Toast.makeText(context, "失败，看log", Toast.LENGTH_SHORT).show()
+                }
+            )
+        }) {
+            Text(text = "检查推流配置码")
         }
     }
 }

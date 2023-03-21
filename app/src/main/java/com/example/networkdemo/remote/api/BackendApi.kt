@@ -1,8 +1,6 @@
 package com.example.networkdemo.remote.api
 
-import com.example.networkdemo.model.ConfigCodeBody
-import com.example.networkdemo.model.ConfigCodeDto
-import com.example.networkdemo.model.VeriKeyDto
+import com.example.networkdemo.model.*
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Headers
@@ -18,4 +16,8 @@ interface BackendApi {
     @Headers("Content-Type: application/json")
     @POST("/api/v1/config/getRtmpConfigCode")
     suspend fun getConfigCode(@Body configCodeBody: ConfigCodeBody): ConfigCodeDto
+
+    @Headers("Content-Type: application/json")
+    @POST("/api/v1/config/checkRtmpConfigCode")
+    suspend fun checkConfigCode(@Body checkConfigCodeBody: CheckConfigCodeBody ): CheckConfigCodeDto
 }
