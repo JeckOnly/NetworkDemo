@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.networkdemo.domain.interf.BackendRepo
 import com.example.networkdemo.model.*
+import com.example.networkdemo.remote.api.BackendApi
 import com.example.networkdemo.remote.state.ResultState
 import com.example.networkdemo.util.EncryptUtil
 import com.example.networkdemo.util.toJson
@@ -86,6 +87,7 @@ class MainViewModel @Inject constructor(
                             mutableConfigCodeDto.update { _ ->
                                 it.data
                             }
+                            Timber.d("网址：${BackendApi.TEST_HOST}h5/config/rtmp?code=${mutableConfigCodeDto.value?.data?.code}")
                             doOnSuccess()
                         }
                     }
