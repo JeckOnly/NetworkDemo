@@ -5,6 +5,7 @@ import android.widget.Space
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -17,9 +18,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.networkdemo.ui.theme.NetworkDemoTheme
 import dagger.hilt.android.AndroidEntryPoint
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.google.accompanist.drawablepainter.rememberDrawablePainter
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -44,6 +47,7 @@ fun MyScreen(
     viewModel: MainViewModel = viewModel()
 ) {
     val context = LocalContext.current
+    val qrcode = viewModel.qrCode.collectAsStateWithLifecycle()
     Column {
         Button(onClick = {
             viewModel.getVeriKey(
@@ -84,5 +88,10 @@ fun MyScreen(
         }) {
             Text(text = "检查推流配置码")
         }
+        Spacer(modifier = Modifier.height(10.dp))
+        Image(
+            painter = rememberDrawablePainter(drawable = qrcode.value),
+            contentDescription = "content description",
+        )
     }
 }
