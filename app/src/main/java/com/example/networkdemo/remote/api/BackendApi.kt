@@ -20,4 +20,12 @@ interface BackendApi {
     @Headers("Content-Type: application/json")
     @POST("/api/v1/config/checkRtmpConfigCode")
     suspend fun checkConfigCode(@Body checkConfigCodeBody: CheckConfigCodeBody ): CheckConfigCodeDto
+
+    companion object {
+        /**
+         * fixme getConfigCode 404
+         */
+        const val TEST_HOST = "http://192.168.70.79/"
+        const val FORMAL_HOST = "https://device-api.szmoma-tech.com/"
+    }
 }

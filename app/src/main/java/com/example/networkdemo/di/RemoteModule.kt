@@ -36,7 +36,7 @@ object RemoteModule {
     fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {
         return Retrofit.Builder()
             .client(okHttpClient)
-            .baseUrl("https://device-api.szmoma-tech.com")
+            .baseUrl(BackendApi.TEST_HOST)
             .addConverterFactory(MoshiConverterFactory.create())
             .addCallAdapterFactory(ApiResponseCallAdapterFactory.create())
             .build()

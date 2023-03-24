@@ -75,7 +75,7 @@ class MainViewModel @Inject constructor(
                 ).onEach {
                     when (it) {
                         is ResultState.Failure -> {
-                            Timber.d(it.throwable.stackTraceToString())
+                            Timber.e(it.throwable.stackTraceToString())
                             doOnFailure()
                         }
                         is ResultState.Loading -> {
